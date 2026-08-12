@@ -901,7 +901,7 @@ body {
 .polaroid-card {
     background: #fffdfa;
     border: 1px solid rgba(0, 0, 0, 0.05);
-    padding: 16px 16px 24px 16px;
+    padding: 16px;
     box-shadow: 0 10px 20px rgba(220, 100, 120, 0.08), 0 2px 5px rgba(0, 0, 0, 0.03);
     border-radius: 4px;
     max-width: 320px;
@@ -922,7 +922,6 @@ body {
     overflow: hidden;
     background: #f7f3ed;
     border: 1px solid rgba(0, 0, 0, 0.03);
-    margin-bottom: 16px;
 }
 
 .polaroid-img {
@@ -930,33 +929,6 @@ body {
     height: 100%;
     object-fit: cover;
     transition: transform 0.5s ease;
-}
-
-.polaroid-caption {
-    font-family: var(--font-ui);
-}
-
-.caption-text {
-    font-family: var(--font-serif);
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--text-main);
-    margin-bottom: 2px;
-}
-
-.caption-date {
-    font-size: 0.75rem;
-    color: var(--primary);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 8px;
-}
-
-.caption-desc {
-    font-size: 0.82rem;
-    color: var(--text-muted);
-    line-height: 1.5;
 }
 
 /* Hover effects */

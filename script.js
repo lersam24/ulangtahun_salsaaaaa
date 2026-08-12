@@ -16,14 +16,14 @@ document.addEventListener('DOMContentLoaded', () => {
             '#ffeb3b'  // Gold Yellow
         ],
         memoryPhotos: [
-            'assets/image (1).jpeg',
-            'assets/image (2).jpeg',
-            'assets/image (3).jpg',
-            'assets/image (4).jpg',
-            'assets/image(5).jpeg',
-            'assets/image (6).jpg',
-            'assets/image (7).jpeg',
-            'assets/image (8).jpg'
+            'assets/image-1.jpeg',
+            'assets/image-2.jpeg',
+            'assets/image-3.jpg',
+            'assets/image-4.jpg',
+            'assets/image-5.jpeg',
+            'assets/image-6.jpg',
+            'assets/image-7.jpeg',
+            'assets/image-8.jpg'
         ]
     };
 
@@ -359,9 +359,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Audio Playlist Player System ---
     const PLAYLIST = [
-        { title: 'Lagu Kenangan Kita 💖', src: 'assets/song1.mp3' },
-        { title: 'Melodi Bahagia 🌸', src: 'assets/song2.mp3' },
-        { title: 'Nada Romantis ✨', src: 'assets/song3.mp3' }
+        { title: 'Kita Usahakan Rumah Itu', src: 'assets/kita-usahakan-rumah-itu.mp3' },
+        { title: 'Pastikan Riuh Akhiri Malammu', src: 'assets/pastikan-riuh-akhiri-malammu.mp3' },
+        { title: 'Shape of My Heart', src: 'assets/shape-of-my-heart.mp3' }
     ];
     let currentTrackIndex = 0;
 
