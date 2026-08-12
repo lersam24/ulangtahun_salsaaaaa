@@ -5,7 +5,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- State & Configurations ---
     const CONFIG = {
-        correctPin: '121224', // Change this to your desired 6-digit PIN code
+        correctPin: '230726', // Change this to your desired 6-digit PIN code
         balloonColors: [
             '#ff8b94', // Pastel Rose Pink
             '#ffaaa6', // Pastel Peach
@@ -16,9 +16,14 @@ document.addEventListener('DOMContentLoaded', () => {
             '#ffeb3b'  // Gold Yellow
         ],
         memoryPhotos: [
-            'assets/memory_cafe.jpg',
-            'assets/memory_sunset.jpg',
-            'assets/memory_cake.jpg'
+            'assets/image (1).jpeg',
+            'assets/image (2).jpeg',
+            'assets/image (3).jpg',
+            'assets/image (4).jpg',
+            'assets/image(5).jpeg',
+            'assets/image (6).jpg',
+            'assets/image (7).jpeg',
+            'assets/image (8).jpg'
         ]
     };
 
@@ -31,9 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainContent = document.getElementById('main-content');
     
     const bgMusic = document.getElementById('bg-music');
-    const musicToggleBtn = document.getElementById('music-toggle-btn');
-    const playIcon = document.querySelector('.play-icon');
-    const pauseIcon = document.querySelector('.pause-icon');
+    const musicPlayerPanel = document.getElementById('music-player-panel');
+    const musicPanelToggle = document.getElementById('music-panel-toggle');
     
     const birthdayCard = document.getElementById('birthday-card');
     const balloonsContainer = document.getElementById('balloons-container');
@@ -160,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const width = 60 * sizeMultiplier;
         const height = 75 * sizeMultiplier;
         const color = CONFIG.balloonColors[Math.floor(Math.random() * CONFIG.balloonColors.length)];
-        const left = Math.random() * 100; // percentage
+        const left = Math.random() * 85; // percentage (keep away from right edge to prevent overflow)
         const duration = Math.random() * 8 + 12; // 12 to 20 seconds
         const swayX = (Math.random() * 80) - 40; // -40px to 40px
         const swayRotate = (Math.random() * 30) - 15; // -15deg to 15deg
@@ -197,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Randomize characteristics
         const width = Math.random() * 20 + 75; // 75px to 95px wide
-        const left = Math.random() * 90; // percentage (keep away from right edge)
+        const left = Math.random() * 75; // percentage (keep well away from right edge for sways)
         const duration = Math.random() * 8 + 15; // 15 to 23 seconds (slower than balloons)
         const swayX = (Math.random() * 80) - 40; // -40px to 40px
         const swayRotate = (Math.random() * 40) - 20; // -20deg to 20deg
@@ -353,13 +357,45 @@ document.addEventListener('DOMContentLoaded', () => {
         initBalloons();
     }
 
-    // --- Audio BGM Player ---
+    // --- Audio Playlist Player System ---
+    const PLAYLIST = [
+        { title: 'Lagu Kenangan Kita 💖', src: 'assets/song1.mp3' },
+        { title: 'Melodi Bahagia 🌸', src: 'assets/song2.mp3' },
+        { title: 'Nada Romantis ✨', src: 'assets/song3.mp3' }
+    ];
+    let currentTrackIndex = 0;
+
+    const playerBody = document.getElementById('player-body');
+    const playerCloseBtn = document.getElementById('player-close-btn');
+    const playPauseBtn = document.getElementById('play-pause-btn');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const currentSongTitle = document.getElementById('current-song-title');
+    const playlistItems = document.querySelectorAll('.playlist-item');
+
+    function loadTrack(index) {
+        currentTrackIndex = index;
+        const track = PLAYLIST[index];
+        bgMusic.src = track.src;
+        currentSongTitle.textContent = track.title;
+        
+        // Update active class in playlist list
+        playlistItems.forEach((item, i) => {
+            if (i === index) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+    }
+
     function playMusic() {
         bgMusic.play()
             .then(() => {
+                const playIcon = playPauseBtn.querySelector('.play-icon');
+                const pauseIcon = playPauseBtn.querySelector('.pause-icon');
                 playIcon.classList.add('hide');
                 pauseIcon.classList.remove('hide');
-                musicToggleBtn.classList.add('playing');
             })
             .catch(err => {
                 console.log('Autoplay blocked: user interaction required for music.');
@@ -368,18 +404,63 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function pauseMusic() {
         bgMusic.pause();
+        const playIcon = playPauseBtn.querySelector('.play-icon');
+        const pauseIcon = playPauseBtn.querySelector('.pause-icon');
         playIcon.classList.remove('hide');
         pauseIcon.classList.add('hide');
-        musicToggleBtn.classList.remove('playing');
     }
 
-    musicToggleBtn.addEventListener('click', () => {
+    function togglePlay() {
         if (bgMusic.paused) {
             playMusic();
         } else {
             pauseMusic();
         }
+    }
+
+    function nextTrack() {
+        let index = (currentTrackIndex + 1) % PLAYLIST.length;
+        loadTrack(index);
+        playMusic();
+    }
+
+    function prevTrack() {
+        let index = (currentTrackIndex - 1 + PLAYLIST.length) % PLAYLIST.length;
+        loadTrack(index);
+        playMusic();
+    }
+
+    // Toggle player expand / minimize
+    musicPanelToggle.addEventListener('click', () => {
+        musicPlayerPanel.classList.remove('minimized');
+        musicPlayerPanel.classList.add('expanded');
+        playerBody.classList.remove('hide');
+        
+        // Auto play on expand
+        playMusic();
     });
+
+    playerCloseBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // prevent panel toggle from triggering
+        musicPlayerPanel.classList.remove('expanded');
+        musicPlayerPanel.classList.add('minimized');
+        playerBody.classList.add('hide');
+    });
+
+    playPauseBtn.addEventListener('click', togglePlay);
+    nextBtn.addEventListener('click', nextTrack);
+    prevBtn.addEventListener('click', prevTrack);
+
+    // Playlist item clicks
+    playlistItems.forEach((item, index) => {
+        item.addEventListener('click', () => {
+            loadTrack(index);
+            playMusic();
+        });
+    });
+
+    // Initialize first track
+    loadTrack(0);
 
     // --- 3D Birthday Card Flip ---
     birthdayCard.addEventListener('click', (e) => {

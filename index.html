@@ -30,8 +30,8 @@
                 </svg>
             </div>
             <h2>Halo, Sayang! ❤️</h2>
-            <p>Masukkan tanggal jadian kita / PIN rahasia untuk membuka kejutan ini.</p>
-            <p class="pin-hint">Petunjuk: Tanggal spesial kita (Format: DDMMYY, Contoh: 12 Desember 2024 = 121224)</p>
+            <p>Masukkan PIN rahasianya buat membuka kejutan ini.</p>
+            <p class="pin-hint">Petunjuk: Tanggal spesial kita :></p>
             
             <div class="pin-input-container">
                 <input type="password" maxlength="1" class="pin-digit" pattern="\d*" inputmode="numeric">
@@ -49,20 +49,61 @@
 
     <!-- Main Content Area (Hidden initially) -->
     <div class="main-content hide" id="main-content">
-        <!-- Floating Music Player -->
-        <div class="music-player">
-            <audio id="bg-music" loop>
-                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
-                Browser kamu tidak mendukung pemutar musik.
-            </audio>
-            <button class="music-toggle-btn" id="music-toggle-btn" aria-label="Play Music">
-                <svg class="music-icon play-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <!-- Floating Music Player Panel -->
+        <div class="music-player-panel minimized" id="music-player-panel">
+            <audio id="bg-music"></audio>
+            
+            <!-- Minimized Trigger Button -->
+            <button class="music-panel-toggle" id="music-panel-toggle" aria-label="Open Music Player">
+                <svg class="music-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
                 </svg>
-                <svg class="music-icon pause-icon hide" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-                </svg>
             </button>
+
+            <!-- Expanded Player Body -->
+            <div class="player-body hide" id="player-body">
+                <div class="player-header">
+                    <div class="song-info">
+                        <span class="song-title" id="current-song-title">Memuat...</span>
+                        <span class="song-artist">Lagu Pilihan Kenangan</span>
+                    </div>
+                    <button class="player-close-btn" id="player-close-btn" aria-label="Minimize Player">
+                        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Controls -->
+                <div class="player-controls">
+                    <button class="control-btn" id="prev-btn" aria-label="Lagu Sebelumnya">
+                        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M6 6h2v12H6zm3.5 6L18 18V6z"/></svg>
+                    </button>
+                    <button class="control-btn play-pause-btn" id="play-pause-btn" aria-label="Putar/Jeda">
+                        <svg class="control-icon play-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>
+                        <svg class="control-icon pause-icon hide" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                    </button>
+                    <button class="control-btn" id="next-btn" aria-label="Lagu Berikutnya">
+                        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M6 18l8.5-6L6 6zm9-12v12h2V6z"/></svg>
+                    </button>
+                </div>
+
+                <!-- Playlist Options -->
+                <div class="playlist-container" id="playlist-container">
+                    <div class="playlist-item" data-index="0">
+                        <span class="track-number">1</span>
+                        <span class="track-name">Lagu Kenangan Kita 💖</span>
+                    </div>
+                    <div class="playlist-item" data-index="1">
+                        <span class="track-number">2</span>
+                        <span class="track-name">Melodi Bahagia 🌸</span>
+                    </div>
+                    <div class="playlist-item" data-index="2">
+                        <span class="track-number">3</span>
+                        <span class="track-name">Nada Romantis ✨</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Hero Section -->
@@ -97,15 +138,15 @@
                         <div class="card-inside-content">
                             <div class="inside-header">
                                 <span class="card-date" id="card-date-placeholder">Hari Ini ✨</span>
-                                <h4>Selamat Hari Lahir, Cantik! 🎂</h4>
+                                <h4>Happy 18th Birthday, Salsabila putri zahma 🤍</h4>
                             </div>
                             <div class="inside-body">
-                                <p>Hari ini adalah hari favoritku di sepanjang tahun, karena di hari inilah sosok yang paling berharga bagiku dilahirkan ke dunia.</p>
-                                <p>Terima kasih telah membawakan tawa, kehangatan, dan kebahagiaan yang tak terhingga ke dalam hari-hariku. Aku bersyukur memiliki kamu di sisiku.</p>
-                                <p>Di hari ulang tahunmu ini, semoga semua impian, harapan, dan doa-doamu dikabulkan. Semoga kebaikan selalu menyertai setiap langkahmu. Aku akan selalu ada di sini untuk mendukungmu dan menemanimu di setiap momen hidup kita.</p>
+                                <p>selamat ulang tahun yang ke-18 yaa, perempuan cantik yang selalu berhasil bikin aku senyum cuman karna hal-hal kecil. 🤍</p>
+                                <p>Semoga di umur 18 ini kamu selalu dikelilingi hal-hal baik. semoga kamu selalu sehat, bahagia, dimudahkan dalam setiap urusan, dan semua impian yang kamu punya bisa satu per satu tercapai.</p>
                             </div>
                             <div class="inside-footer">
-                                <p>Dengan penuh cinta,</p>
+                                <p>Happy belated birthday, my beautiful girl.
+I love you. 🤍🤍</p>
                                 <strong class="signature">Pasanganmu ❤️</strong>
                             </div>
                         </div>
@@ -123,11 +164,11 @@
                 <!-- Memory 1 -->
                 <div class="polaroid-card">
                     <div class="polaroid-img-wrapper">
-                        <img src="assets/memory_cafe.jpg" alt="Momen di Kafe" class="polaroid-img">
+                        <img src="assets/image (1).jpeg" alt="Momen Indah 1" class="polaroid-img">
                     </div>
                     <div class="polaroid-caption">
                         <p class="caption-text">Tawa Hangat Sore Hari ☕</p>
-                        <p class="caption-date">Di Kafe Favorit Kita</p>
+                        <p class="caption-date">Kenangan Manis</p>
                         <p class="caption-desc">Setiap cangkir kopi dan obrolan kecil bersamamu selalu menjadi momen yang paling menenangkan di hari-hariku.</p>
                     </div>
                 </div>
@@ -135,7 +176,7 @@
                 <!-- Memory 2 -->
                 <div class="polaroid-card">
                     <div class="polaroid-img-wrapper">
-                        <img src="assets/memory_sunset.jpg" alt="Momen Senja" class="polaroid-img">
+                        <img src="assets/image (2).jpeg" alt="Momen Indah 2" class="polaroid-img">
                     </div>
                     <div class="polaroid-caption">
                         <p class="caption-text">Senja Bersama 🌅</p>
@@ -147,12 +188,72 @@
                 <!-- Memory 3 -->
                 <div class="polaroid-card">
                     <div class="polaroid-img-wrapper">
-                        <img src="assets/memory_cake.jpg" alt="Momen Tiup Lilin" class="polaroid-img">
+                        <img src="assets/image (3).jpg" alt="Momen Indah 3" class="polaroid-img">
                     </div>
                     <div class="polaroid-caption">
                         <p class="caption-text">Perayaan Kecil Kita 🎂</p>
                         <p class="caption-date">Ulang Tahun Sebelumnya</p>
                         <p class="caption-desc">Melihat binar bahagia di matamu saat meniup lilin adalah pemandangan terindah yang selalu ingin aku jaga.</p>
+                    </div>
+                </div>
+
+                <!-- Memory 4 -->
+                <div class="polaroid-card">
+                    <div class="polaroid-img-wrapper">
+                        <img src="assets/image (4).jpg" alt="Momen Indah 4" class="polaroid-img">
+                    </div>
+                    <div class="polaroid-caption">
+                        <p class="caption-text">Langkah Bersama 🌲</p>
+                        <p class="caption-date">Petualangan Hutan Pinus</p>
+                        <p class="caption-desc">Menelusuri jalan setapak bersamamu membuat perjalanan sejauh apa pun terasa singkat dan menyenangkan.</p>
+                    </div>
+                </div>
+
+                <!-- Memory 5 -->
+                <div class="polaroid-card">
+                    <div class="polaroid-img-wrapper">
+                        <img src="assets/image(5).jpeg" alt="Momen Indah 5" class="polaroid-img">
+                    </div>
+                    <div class="polaroid-caption">
+                        <p class="caption-text">Konser dan Nada Cerita 🎵</p>
+                        <p class="caption-date">Malam Festival</p>
+                        <p class="caption-desc">Di tengah keramaian konser musik, hanya gelak tawa dan suaramu yang paling merdu terdengar di telingaku.</p>
+                    </div>
+                </div>
+
+                <!-- Memory 6 -->
+                <div class="polaroid-card">
+                    <div class="polaroid-img-wrapper">
+                        <img src="assets/image (6).jpg" alt="Momen Indah 6" class="polaroid-img">
+                    </div>
+                    <div class="polaroid-caption">
+                        <p class="caption-text">Di Bawah Hujan ☔</p>
+                        <p class="caption-date">Berbagi Payung Teduh</p>
+                        <p class="caption-desc">Hujan tidak pernah terasa dingin sejak aku tahu ada pelukan hangatmu yang selalu siap melindungiku.</p>
+                    </div>
+                </div>
+
+                <!-- Memory 7 -->
+                <div class="polaroid-card">
+                    <div class="polaroid-img-wrapper">
+                        <img src="assets/image (7).jpeg" alt="Momen Indah 7" class="polaroid-img">
+                    </div>
+                    <div class="polaroid-caption">
+                        <p class="caption-text">Dekap Hangat 🤗</p>
+                        <p class="caption-date">Rumah Terbaik</p>
+                        <p class="caption-desc">Pelukan sederhana darimu selalu menjadi tempat paling aman dan nyaman untuk pulang dari segala penat.</p>
+                    </div>
+                </div>
+
+                <!-- Memory 8 -->
+                <div class="polaroid-card">
+                    <div class="polaroid-img-wrapper">
+                        <img src="assets/image (8).jpg" alt="Momen Indah 8" class="polaroid-img">
+                    </div>
+                    <div class="polaroid-caption">
+                        <p class="caption-text">Genggam Jemariku 🤝</p>
+                        <p class="caption-date">Janji Setia</p>
+                        <p class="caption-desc">Menyatukan tangan kita adalah cara bisu untuk berkata bahwa aku tidak akan pernah melepaskanmu.</p>
                     </div>
                 </div>
             </div>
