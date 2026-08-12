@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selamat Ulang Tahun, Sayang! ❤️</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- CSS Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background Canvas for Confetti & Particles -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Floating Balloons Background -->
+    <div class="balloons-container" id="balloons-container"></div>
+
+    <!-- PIN Lock Overlay -->
+    <div class="lock-overlay" id="lock-overlay">
+        <div class="lock-card">
+            <div class="lock-icon-wrapper">
+                <!-- Heart Lock SVG -->
+                <svg class="heart-lock-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/>
+                    <path d="M12 11a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" fill="#FFF"/>
+                    <path d="M12 11v3" stroke="#FFF" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <h2>Halo, Sayang! ❤️</h2>
+            <p>Masukkan tanggal jadian kita / PIN rahasia untuk membuka kejutan ini.</p>
+            <p class="pin-hint">Petunjuk: Tanggal spesial kita (Format: DDMMYY, Contoh: 12 Desember 2024 = 121224)</p>
+            
+            <div class="pin-input-container">
+                <input type="password" maxlength="1" class="pin-digit" pattern="\d*" inputmode="numeric">
+                <input type="password" maxlength="1" class="pin-digit" pattern="\d*" inputmode="numeric">
+                <input type="password" maxlength="1" class="pin-digit" pattern="\d*" inputmode="numeric">
+                <input type="password" maxlength="1" class="pin-digit" pattern="\d*" inputmode="numeric">
+                <input type="password" maxlength="1" class="pin-digit" pattern="\d*" inputmode="numeric">
+                <input type="password" maxlength="1" class="pin-digit" pattern="\d*" inputmode="numeric">
+            </div>
+
+            <button class="unlock-btn" id="unlock-btn">Buka Kejutan</button>
+            <p class="error-msg" id="error-msg">PIN salah, coba ingat-ingat lagi ya! 😉</p>
+        </div>
+    </div>
+
+    <!-- Main Content Area (Hidden initially) -->
+    <div class="main-content hide" id="main-content">
+        <!-- Floating Music Player -->
+        <div class="music-player">
+            <audio id="bg-music" loop>
+                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
+                Browser kamu tidak mendukung pemutar musik.
+            </audio>
+            <button class="music-toggle-btn" id="music-toggle-btn" aria-label="Play Music">
+                <svg class="music-icon play-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                </svg>
+                <svg class="music-icon pause-icon hide" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Hero Section -->
+        <header class="hero-section">
+            <div class="decorations">
+                <span class="sparkle" style="top: 15%; left: 10%;">✦</span>
+                <span class="sparkle" style="top: 20%; right: 15%;">✦</span>
+                <span class="sparkle" style="bottom: 10%; left: 20%;">✦</span>
+            </div>
+            <h1 class="hero-title animate-title">Selamat Ulang Tahun!</h1>
+            <p class="hero-subtitle animate-fade-in">Hari ini didedikasikan sepenuhnya untuk merayakan dirimu yang luar biasa.</p>
+        </header>
+
+        <!-- Greeting Card Section -->
+        <section class="card-section">
+            <h2 class="section-title">Sebuah Pesan Untukmu</h2>
+            
+            <div class="card-container">
+                <div class="birthday-card" id="birthday-card">
+                    <!-- Front of the Card -->
+                    <div class="card-face card-front">
+                        <div class="card-front-content">
+                            <div class="ribbon"></div>
+                            <div class="envelope-seal">❤️</div>
+                            <h3>Buka Kartu Ini</h3>
+                            <p>Klik untuk membuka pesan manis khusus untukmu</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Inside of the Card -->
+                    <div class="card-face card-inside">
+                        <div class="card-inside-content">
+                            <div class="inside-header">
+                                <span class="card-date" id="card-date-placeholder">Hari Ini ✨</span>
+                                <h4>Selamat Hari Lahir, Cantik! 🎂</h4>
+                            </div>
+                            <div class="inside-body">
+                                <p>Hari ini adalah hari favoritku di sepanjang tahun, karena di hari inilah sosok yang paling berharga bagiku dilahirkan ke dunia.</p>
+                                <p>Terima kasih telah membawakan tawa, kehangatan, dan kebahagiaan yang tak terhingga ke dalam hari-hariku. Aku bersyukur memiliki kamu di sisiku.</p>
+                                <p>Di hari ulang tahunmu ini, semoga semua impian, harapan, dan doa-doamu dikabulkan. Semoga kebaikan selalu menyertai setiap langkahmu. Aku akan selalu ada di sini untuk mendukungmu dan menemanimu di setiap momen hidup kita.</p>
+                            </div>
+                            <div class="inside-footer">
+                                <p>Dengan penuh cinta,</p>
+                                <strong class="signature">Pasanganmu ❤️</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Memories Grid Section -->
+        <section class="memories-section">
+            <h2 class="section-title">Momen Kebersamaan Kita</h2>
+            <p class="section-subtitle">Beberapa kenangan manis yang telah kita lalui bersama, dan mari kita buat lebih banyak lagi ke depannya.</p>
+
+            <div class="memories-grid">
+                <!-- Memory 1 -->
+                <div class="polaroid-card">
+                    <div class="polaroid-img-wrapper">
+                        <img src="assets/memory_cafe.jpg" alt="Momen di Kafe" class="polaroid-img">
+                    </div>
+                    <div class="polaroid-caption">
+                        <p class="caption-text">Tawa Hangat Sore Hari ☕</p>
+                        <p class="caption-date">Di Kafe Favorit Kita</p>
+                        <p class="caption-desc">Setiap cangkir kopi dan obrolan kecil bersamamu selalu menjadi momen yang paling menenangkan di hari-hariku.</p>
+                    </div>
+                </div>
+
+                <!-- Memory 2 -->
+                <div class="polaroid-card">
+                    <div class="polaroid-img-wrapper">
+                        <img src="assets/memory_sunset.jpg" alt="Momen Senja" class="polaroid-img">
+                    </div>
+                    <div class="polaroid-caption">
+                        <p class="caption-text">Senja Bersama 🌅</p>
+                        <p class="caption-date">Pantai Impian</p>
+                        <p class="caption-desc">Menatap matahari terbenam bersamamu membuatku sadar bahwa keindahan senja pun masih kalah dari senyumanmu.</p>
+                    </div>
+                </div>
+
+                <!-- Memory 3 -->
+                <div class="polaroid-card">
+                    <div class="polaroid-img-wrapper">
+                        <img src="assets/memory_cake.jpg" alt="Momen Tiup Lilin" class="polaroid-img">
+                    </div>
+                    <div class="polaroid-caption">
+                        <p class="caption-text">Perayaan Kecil Kita 🎂</p>
+                        <p class="caption-date">Ulang Tahun Sebelumnya</p>
+                        <p class="caption-desc">Melihat binar bahagia di matamu saat meniup lilin adalah pemandangan terindah yang selalu ingin aku jaga.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="main-footer">
+            <p>Dibuat dengan cinta yang mendalam untukmu. Selamanya & Selalu. ❤️</p>
+            <p class="copyright">&copy; 2026 Momen Bahagia Kita</p>
+        </footer>
+    </div>
+
+    <!-- JS Script -->
+    <script src="script.js"></script>
+</body>
+</html>

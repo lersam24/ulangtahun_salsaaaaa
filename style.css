@@ -1,0 +1,821 @@
+/* ==========================================================================
+   CSS Design System & Styles - Birthday Greeting & Memories Web
+   ========================================================================== */
+
+/* --- Custom Properties (Theme Variables) --- */
+:root {
+    /* Color Palette */
+    --primary: hsl(348, 83%, 67%);        /* Warm Rose Pink */
+    --primary-hover: hsl(348, 75%, 58%);
+    --primary-light: hsl(348, 100%, 95%);
+    --primary-dark: hsl(348, 60%, 45%);
+    --secondary: hsl(324, 70%, 92%);      /* Pastel Lavender-Pink */
+    --accent: hsl(38, 95%, 62%);          /* Champagne Gold */
+    --bg-gradient: linear-gradient(135deg, hsl(352, 100%, 97%) 0%, hsl(330, 80%, 94%) 50%, hsl(20, 100%, 95%) 100%);
+    --dark-overlay: rgba(30, 10, 20, 0.4);
+    
+    /* Typography */
+    --font-ui: 'Outfit', 'Poppins', sans-serif;
+    --font-serif: 'Playfair Display', Georgia, serif;
+    --font-body: 'Poppins', sans-serif;
+    
+    /* Colors for Text */
+    --text-main: hsl(345, 45%, 18%);
+    --text-muted: hsl(345, 15%, 45%);
+    --text-light: hsl(0, 0%, 100%);
+
+    /* Shadows & Border Radii */
+    --shadow-sm: 0 4px 10px rgba(220, 100, 120, 0.06);
+    --shadow-md: 0 10px 25px rgba(220, 100, 120, 0.12);
+    --shadow-lg: 0 20px 50px rgba(220, 100, 120, 0.2);
+    --radius-sm: 8px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    
+    /* Transitions */
+    --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* --- Reset & Base Styles --- */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-body);
+    background: var(--bg-gradient);
+    color: var(--text-main);
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.6;
+    position: relative;
+}
+
+/* --- Scrollbar Customization --- */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--primary-light);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-hover);
+}
+
+/* --- Confetti & Particles Canvas --- */
+#confetti-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 999;
+}
+
+/* --- Floating Balloons Background --- */
+.balloons-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.balloon {
+    position: absolute;
+    bottom: -150px;
+    width: 60px;
+    height: 75px;
+    border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+    animation: floatUp 15s infinite linear;
+    box-shadow: inset -8px -8px 15px rgba(0, 0, 0, 0.08), 
+                inset 8px 8px 15px rgba(255, 255, 255, 0.3),
+                0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Balloon string */
+.balloon::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 29px;
+    width: 2px;
+    height: 15px;
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* Balloon basket/knot */
+.balloon::before {
+    content: '▲';
+    color: inherit;
+    font-size: 8px;
+    position: absolute;
+    bottom: -4px;
+    left: 27px;
+    transform: rotate(180deg);
+}
+
+/* Floating Polaroid Photos */
+.floating-photo {
+    position: absolute;
+    bottom: -180px;
+    background: #fffdfa;
+    padding: 6px 6px 14px 6px;
+    box-shadow: 0 4px 10px rgba(220, 100, 120, 0.08), 0 2px 5px rgba(0, 0, 0, 0.03);
+    border-radius: 2px;
+    animation: floatUp 15s infinite linear;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.floating-photo-img {
+    width: 100%;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+    display: block;
+    border-radius: 1px;
+}
+
+/* Optional mini heart decor on floating photo bottom */
+.floating-photo::after {
+    content: '❤️';
+    font-size: 8px;
+    margin-top: 4px;
+    opacity: 0.8;
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.75;
+    }
+    90% {
+        opacity: 0.75;
+    }
+    100% {
+        transform: translateY(-110vh) translateX(var(--sway-x, 40px)) rotate(var(--sway-rotate, 15deg));
+        opacity: 0;
+    }
+}
+
+/* --- Lock Screen Overlay --- */
+.lock-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, hsla(350, 100%, 98%, 0.95) 0%, hsla(340, 80%, 92%, 0.95) 100%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+    transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.8s;
+    padding: 20px;
+}
+
+.lock-overlay.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.lock-card {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-lg);
+    border-radius: var(--radius-lg);
+    padding: 40px 30px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transform: translateY(0);
+    transition: transform var(--transition-bounce);
+}
+
+.lock-card h2 {
+    font-family: var(--font-serif);
+    font-size: 1.8rem;
+    color: var(--text-main);
+    margin-bottom: 12px;
+}
+
+.lock-card p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.lock-card .pin-hint {
+    font-size: 0.8rem;
+    color: var(--primary-dark);
+    font-style: italic;
+    margin-bottom: 24px;
+}
+
+.lock-icon-wrapper {
+    width: 70px;
+    height: 70px;
+    background: var(--primary-light);
+    color: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 20px auto;
+    box-shadow: var(--shadow-sm);
+    animation: pulseHeart 2s infinite ease-in-out;
+}
+
+.heart-lock-svg {
+    width: 32px;
+    height: 32px;
+}
+
+@keyframes pulseHeart {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(244, 98, 126, 0.4);
+    }
+    50% {
+        transform: scale(1.08);
+        box-shadow: 0 0 0 10px rgba(244, 98, 126, 0);
+    }
+}
+
+/* PIN Inputs */
+.pin-input-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.pin-digit {
+    width: 50px;
+    height: 60px;
+    border: 2px solid rgba(220, 100, 120, 0.2);
+    border-radius: var(--radius-sm);
+    background: white;
+    font-size: 1.8rem;
+    font-family: var(--font-ui);
+    text-align: center;
+    color: var(--text-main);
+    transition: var(--transition-fast);
+    outline: none;
+    box-shadow: var(--shadow-sm);
+}
+
+.pin-digit:focus {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(244, 98, 126, 0.15);
+}
+
+/* Unlock Button */
+.unlock-btn {
+    background: linear-gradient(135deg, var(--primary) 0%, hsl(340, 80%, 60%) 100%);
+    border: none;
+    color: white;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 14px 32px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(244, 98, 126, 0.3);
+    transition: var(--transition-fast);
+    width: 100%;
+}
+
+.unlock-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(244, 98, 126, 0.4);
+}
+
+.unlock-btn:active {
+    transform: translateY(1px);
+}
+
+/* Error feedback */
+.error-msg {
+    color: #e63946;
+    font-size: 0.85rem;
+    margin-top: 15px;
+    display: none;
+    font-weight: 500;
+}
+
+.error-shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-8px); }
+    40%, 80% { transform: translateX(8px); }
+}
+
+/* Helper hidden styles */
+.hide {
+    display: none !important;
+}
+
+/* --- Main Content Section --- */
+.main-content {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1s ease-out, transform 1s ease-out;
+}
+
+.main-content.reveal-page {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --- Floating Music Player --- */
+.music-player {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 100;
+}
+
+.music-toggle-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-md);
+    color: var(--primary);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    transition: var(--transition-fast);
+}
+
+.music-toggle-btn:hover {
+    transform: scale(1.1);
+    background: white;
+    color: var(--primary-hover);
+    box-shadow: var(--shadow-lg);
+}
+
+.music-toggle-btn:active {
+    transform: scale(0.95);
+}
+
+.music-icon {
+    width: 24px;
+    height: 24px;
+}
+
+/* --- Hero Section --- */
+.hero-section {
+    text-align: center;
+    padding: 80px 20px 60px 20px;
+    position: relative;
+}
+
+.decorations {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.sparkle {
+    position: absolute;
+    font-size: 1.5rem;
+    color: var(--accent);
+    opacity: 0.8;
+    animation: sparkleAnim 3s infinite ease-in-out;
+}
+
+@keyframes sparkleAnim {
+    0%, 100% { transform: scale(0.8); opacity: 0.3; }
+    50% { transform: scale(1.2); opacity: 1; filter: drop-shadow(0 0 5px var(--accent)); }
+}
+
+.hero-title {
+    font-family: var(--font-serif);
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 800;
+    background: linear-gradient(to right, var(--primary-dark), var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 15px;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+}
+
+.hero-subtitle {
+    font-family: var(--font-ui);
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    color: var(--text-muted);
+    font-weight: 400;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* --- Common Section Styling --- */
+.section-title {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 10px;
+    position: relative;
+    display: inline-block;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--text-main);
+}
+
+.section-title::after {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 3px;
+    background: var(--primary);
+    border-radius: 2px;
+    margin: 8px auto 0 auto;
+}
+
+.section-subtitle {
+    text-align: center;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto 40px auto;
+    font-size: 0.95rem;
+}
+
+/* --- Greeting Card Section --- */
+.card-section {
+    padding: 60px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card-container {
+    perspective: 1500px;
+    width: 340px;
+    height: 480px;
+    margin-top: 30px;
+    cursor: pointer;
+}
+
+.birthday-card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.2);
+    border-radius: var(--radius-md);
+}
+
+/* Flipping classes */
+.birthday-card.flipped {
+    transform: rotateY(-180deg);
+}
+
+.card-face {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+}
+
+/* Card Front Styling */
+.card-front {
+    background: linear-gradient(135deg, var(--primary) 0%, hsl(340, 70%, 50%) 100%);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.card-front-content {
+    text-align: center;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    z-index: 2;
+}
+
+/* Gift Ribbon Overlay on cover */
+.ribbon {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 40px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+.ribbon::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-50%);
+}
+
+.envelope-seal {
+    font-size: 3.5rem;
+    width: 90px;
+    height: 90px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 25px;
+    animation: heartbeat 1.5s infinite ease-in-out;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.card-front-content h3 {
+    font-family: var(--font-serif);
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+}
+
+.card-front-content p {
+    font-size: 0.9rem;
+    opacity: 0.85;
+    max-width: 200px;
+}
+
+/* Card Inside Styling */
+.card-inside {
+    background: #fffcf8;
+    color: var(--text-main);
+    transform: rotateY(180deg);
+    border: 1px solid rgba(220, 100, 120, 0.15);
+    display: flex;
+    flex-direction: column;
+}
+
+.card-inside-content {
+    padding: 35px 25px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow-y: auto;
+    position: relative;
+}
+
+/* Notebook lines decor */
+.card-inside-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(rgba(0,0,0,0) 97%, rgba(220, 100, 120, 0.08) 100%);
+    background-size: 100% 28px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.inside-header, .inside-body, .inside-footer {
+    position: relative;
+    z-index: 1;
+}
+
+.inside-header {
+    border-bottom: 1px dashed rgba(220, 100, 120, 0.3);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.card-date {
+    font-size: 0.75rem;
+    color: var(--primary-dark);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.inside-header h4 {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    color: var(--primary-dark);
+    margin-top: 2px;
+}
+
+.inside-body {
+    flex-grow: 1;
+    font-size: 0.88rem;
+    line-height: 1.8;
+    color: #4a3438;
+}
+
+.inside-body p {
+    margin-bottom: 12px;
+    text-indent: 15px;
+    text-align: justify;
+}
+
+.inside-footer {
+    border-top: 1px dashed rgba(220, 100, 120, 0.3);
+    padding-top: 12px;
+    font-size: 0.88rem;
+}
+
+.signature {
+    display: block;
+    color: var(--primary-dark);
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    margin-top: 4px;
+    font-style: italic;
+}
+
+/* --- Memories Section --- */
+.memories-section {
+    padding: 60px 0;
+}
+
+.memories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 40px;
+    margin-top: 20px;
+    justify-items: center;
+}
+
+/* Polaroid Card Design */
+.polaroid-card {
+    background: #fffdfa;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 16px 16px 24px 16px;
+    box-shadow: 0 10px 20px rgba(220, 100, 120, 0.08), 0 2px 5px rgba(0, 0, 0, 0.03);
+    border-radius: 4px;
+    max-width: 320px;
+    width: 100%;
+    transition: transform var(--transition-bounce), box-shadow var(--transition-smooth);
+    position: relative;
+    cursor: default;
+}
+
+/* Give polaroid cards a subtle rotation like scattered photos */
+.polaroid-card:nth-child(1) { transform: rotate(-2deg); }
+.polaroid-card:nth-child(2) { transform: rotate(1.5deg); }
+.polaroid-card:nth-child(3) { transform: rotate(-1deg); }
+
+.polaroid-img-wrapper {
+    width: 100%;
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    background: #f7f3ed;
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    margin-bottom: 16px;
+}
+
+.polaroid-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.polaroid-caption {
+    font-family: var(--font-ui);
+}
+
+.caption-text {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 2px;
+}
+
+.caption-date {
+    font-size: 0.75rem;
+    color: var(--primary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.caption-desc {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+/* Hover effects */
+.polaroid-card:hover {
+    transform: translateY(-8px) rotate(0deg) scale(1.02);
+    box-shadow: 0 20px 35px rgba(220, 100, 120, 0.15), 0 4px 10px rgba(0, 0, 0, 0.05);
+    z-index: 5;
+}
+
+.polaroid-card:hover .polaroid-img {
+    transform: scale(1.05);
+}
+
+/* --- Footer --- */
+.main-footer {
+    text-align: center;
+    padding: 80px 20px 20px 20px;
+    margin-top: 40px;
+    border-top: 1px solid rgba(220, 100, 120, 0.1);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.main-footer .copyright {
+    font-size: 0.75rem;
+    margin-top: 8px;
+    opacity: 0.7;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 480px) {
+    .lock-card {
+        padding: 30px 20px;
+    }
+    
+    .pin-input-container {
+        gap: 8px;
+    }
+
+    .pin-digit {
+        width: 38px;
+        height: 48px;
+        font-size: 1.4rem;
+    }
+    
+    .card-container {
+        width: 290px;
+        height: 430px;
+    }
+
+    .card-inside-content {
+        padding: 25px 18px;
+    }
+}

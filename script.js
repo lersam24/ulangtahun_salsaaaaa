@@ -1,0 +1,399 @@
+/* ==========================================================================
+   JavaScript Logic - Birthday Greeting & Memories Web
+   ========================================================================== */
+
+document.addEventListener('DOMContentLoaded', () => {
+    // --- State & Configurations ---
+    const CONFIG = {
+        correctPin: '121224', // Change this to your desired 6-digit PIN code
+        balloonColors: [
+            '#ff8b94', // Pastel Rose Pink
+            '#ffaaa6', // Pastel Peach
+            '#ffd3b6', // Pastel Orange
+            '#dcedc1', // Pastel Mint
+            '#a8e6cf', // Pastel Turquoise
+            '#d1c4e9', // Pastel Purple
+            '#ffeb3b'  // Gold Yellow
+        ],
+        memoryPhotos: [
+            'assets/memory_cafe.jpg',
+            'assets/memory_sunset.jpg',
+            'assets/memory_cake.jpg'
+        ]
+    };
+
+    // --- DOM Elements ---
+    const lockOverlay = document.getElementById('lock-overlay');
+    const lockCard = document.querySelector('.lock-card');
+    const pinInputs = document.querySelectorAll('.pin-digit');
+    const unlockBtn = document.getElementById('unlock-btn');
+    const errorMsg = document.getElementById('error-msg');
+    const mainContent = document.getElementById('main-content');
+    
+    const bgMusic = document.getElementById('bg-music');
+    const musicToggleBtn = document.getElementById('music-toggle-btn');
+    const playIcon = document.querySelector('.play-icon');
+    const pauseIcon = document.querySelector('.pause-icon');
+    
+    const birthdayCard = document.getElementById('birthday-card');
+    const balloonsContainer = document.getElementById('balloons-container');
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Set today's date dynamically on card
+    const cardDatePlaceholder = document.getElementById('card-date-placeholder');
+    if (cardDatePlaceholder) {
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };
+        cardDatePlaceholder.textContent = new Date().toLocaleDateString('id-ID', options) + ' ✨';
+    }
+
+    // --- Canvas Confetti System ---
+    let particles = [];
+    let animationFrameId;
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class ConfettiParticle {
+        constructor(x, y, isBurst = false) {
+            this.x = x;
+            this.y = y;
+            this.size = Math.random() * 8 + 4;
+            this.color = CONFIG.balloonColors[Math.floor(Math.random() * CONFIG.balloonColors.length)];
+            
+            if (isBurst) {
+                // Radial velocity for burst
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 8 + 4;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed - Math.random() * 3; // slight upward bias
+            } else {
+                // Falling style
+                this.vx = Math.random() * 2 - 1;
+                this.vy = Math.random() * 3 + 2;
+            }
+            
+            this.rotation = Math.random() * Math.PI * 2;
+            this.rotationSpeed = Math.random() * 0.1 - 0.05;
+            this.opacity = 1;
+            this.decay = Math.random() * 0.015 + 0.01;
+            this.isBurst = isBurst;
+        }
+
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            this.rotation += this.rotationSpeed;
+            
+            // Gravity or air resistance
+            if (this.isBurst) {
+                this.vy += 0.15; // gravity pulling down
+                this.vx *= 0.98; // air resistance
+            } else {
+                this.vx += Math.sin(this.y / 30) * 0.02; // sway back and forth
+            }
+
+            this.opacity -= this.decay;
+        }
+
+        draw() {
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.rotation);
+            ctx.globalAlpha = this.opacity;
+            ctx.fillStyle = this.color;
+            ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+            ctx.restore();
+        }
+    }
+
+    function spawnConfettiBurst(x, y, count = 50) {
+        for (let i = 0; i < count; i++) {
+            particles.push(new ConfettiParticle(x, y, true));
+        }
+        startConfettiAnimation();
+    }
+
+    function spawnConfettiRain() {
+        for (let i = 0; i < 2; i++) {
+            particles.push(new ConfettiParticle(Math.random() * canvas.width, -10, false));
+        }
+        startConfettiAnimation();
+    }
+
+    function animateConfetti() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Update and draw particles
+        particles = particles.filter(p => p.opacity > 0);
+        particles.forEach(p => {
+            p.update();
+            p.draw();
+        });
+
+        // Continue animation if we have active particles or if rain is triggered
+        if (particles.length > 0) {
+            animationFrameId = requestAnimationFrame(animateConfetti);
+        } else {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+        }
+    }
+
+    function startConfettiAnimation() {
+        if (!animationFrameId) {
+            animateConfetti();
+        }
+    }
+
+    // --- Floating Balloons & Photos System ---
+    function spawnBalloon() {
+        const balloon = document.createElement('div');
+        balloon.classList.add('balloon');
+        
+        // Randomize characteristics
+        const sizeMultiplier = Math.random() * 0.4 + 0.8; // 0.8 to 1.2
+        const width = 60 * sizeMultiplier;
+        const height = 75 * sizeMultiplier;
+        const color = CONFIG.balloonColors[Math.floor(Math.random() * CONFIG.balloonColors.length)];
+        const left = Math.random() * 100; // percentage
+        const duration = Math.random() * 8 + 12; // 12 to 20 seconds
+        const swayX = (Math.random() * 80) - 40; // -40px to 40px
+        const swayRotate = (Math.random() * 30) - 15; // -15deg to 15deg
+        
+        balloon.style.width = `${width}px`;
+        balloon.style.height = `${height}px`;
+        balloon.style.left = `${left}%`;
+        balloon.style.backgroundColor = color;
+        balloon.style.color = color; // for border/knot matching
+        balloon.style.animationDuration = `${duration}s`;
+        balloon.style.setProperty('--sway-x', `${swayX}px`);
+        balloon.style.setProperty('--sway-rotate', `${swayRotate}deg`);
+        
+        balloonsContainer.appendChild(balloon);
+        
+        // Remove balloon after animation completes
+        setTimeout(() => {
+            balloon.remove();
+        }, duration * 1000);
+    }
+
+    function spawnFloatingPhoto() {
+        const photoFrame = document.createElement('div');
+        photoFrame.classList.add('floating-photo');
+        
+        // Pick a random photo
+        const photoSrc = CONFIG.memoryPhotos[Math.floor(Math.random() * CONFIG.memoryPhotos.length)];
+        
+        // Create image element
+        const img = document.createElement('img');
+        img.classList.add('floating-photo-img');
+        img.src = photoSrc;
+        photoFrame.appendChild(img);
+        
+        // Randomize characteristics
+        const width = Math.random() * 20 + 75; // 75px to 95px wide
+        const left = Math.random() * 90; // percentage (keep away from right edge)
+        const duration = Math.random() * 8 + 15; // 15 to 23 seconds (slower than balloons)
+        const swayX = (Math.random() * 80) - 40; // -40px to 40px
+        const swayRotate = (Math.random() * 40) - 20; // -20deg to 20deg
+        
+        photoFrame.style.width = `${width}px`;
+        photoFrame.style.left = `${left}%`;
+        photoFrame.style.animationDuration = `${duration}s`;
+        photoFrame.style.setProperty('--sway-x', `${swayX}px`);
+        photoFrame.style.setProperty('--sway-rotate', `${swayRotate}deg`);
+        
+        balloonsContainer.appendChild(photoFrame);
+        
+        // Remove after animation completes
+        setTimeout(() => {
+            photoFrame.remove();
+        }, duration * 1000);
+    }
+
+    // Start spawning balloons and photos periodically
+    function initBalloons() {
+        // Spawn initial batch
+        for(let i = 0; i < 6; i++) {
+            setTimeout(() => {
+                spawnBalloon();
+            }, Math.random() * 4000);
+        }
+        for(let i = 0; i < 3; i++) {
+            setTimeout(() => {
+                spawnFloatingPhoto();
+            }, Math.random() * 6000 + 1000);
+        }
+        
+        // Keep spawning periodically
+        setInterval(spawnBalloon, 2400);
+        setInterval(spawnFloatingPhoto, 4200); // spawn a photo every 4.2 seconds
+    }
+
+    // --- PIN Entry Actions ---
+    // Handle PIN input focus cycling
+    pinInputs.forEach((input, index) => {
+        // Handle input change
+        input.addEventListener('input', (e) => {
+            const value = e.target.value;
+            // Allow only numbers
+            if (value && !/^\d$/.test(value)) {
+                e.target.value = '';
+                return;
+            }
+
+            if (value && index < pinInputs.length - 1) {
+                pinInputs[index + 1].focus();
+            }
+
+            // Auto submit when last input is filled
+            if (getEnteredPin().length === pinInputs.length) {
+                verifyPin();
+            }
+        });
+
+        // Handle backspace/navigation
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && !input.value && index > 0) {
+                pinInputs[index - 1].focus();
+                pinInputs[index - 1].value = '';
+            }
+        });
+        
+        // Focus first input automatically
+        if (index === 0) {
+            setTimeout(() => input.focus(), 500);
+        }
+    });
+
+    function getEnteredPin() {
+        let entered = '';
+        pinInputs.forEach(input => {
+            entered += input.value;
+        });
+        return entered;
+    }
+
+    function clearPinInputs() {
+        pinInputs.forEach(input => {
+            input.value = '';
+        });
+        pinInputs[0].focus();
+    }
+
+    function verifyPin() {
+        const pin = getEnteredPin();
+        if (pin === CONFIG.correctPin) {
+            unlockSite();
+        } else {
+            // Trigger failure feedback
+            lockCard.classList.add('error-shake');
+            errorMsg.style.display = 'block';
+            
+            // Remove shake class after animation completes
+            setTimeout(() => {
+                lockCard.classList.remove('error-shake');
+            }, 500);
+            
+            clearPinInputs();
+        }
+    }
+
+    unlockBtn.addEventListener('click', verifyPin);
+
+    // --- Unlock Site Actions ---
+    function unlockSite() {
+        // Save to session storage so refresh doesn't lock again
+        sessionStorage.setItem('birthday_web_unlocked', 'true');
+        
+        // Fade out overlay
+        lockOverlay.classList.add('fade-out');
+        
+        // Reveal main content
+        mainContent.classList.remove('hide');
+        setTimeout(() => {
+            mainContent.classList.add('reveal-page');
+            
+            // Celebrate with fireworks of confetti!
+            triggerOpeningConfetti();
+        }, 100);
+        
+        // Initialize interactive modules
+        initBalloons();
+        
+        // Attempt to play music automatically (users clicked/interacted, so it should succeed)
+        playMusic();
+    }
+
+    function triggerOpeningConfetti() {
+        // Shoot confetti from multiple spots
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        
+        spawnConfettiBurst(width * 0.2, height * 0.8, 60);
+        spawnConfettiBurst(width * 0.8, height * 0.8, 60);
+        
+        // Setup a gentle continuous confetti rain for a few seconds
+        const rainInterval = setInterval(spawnConfettiRain, 300);
+        setTimeout(() => {
+            clearInterval(rainInterval);
+        }, 6000);
+    }
+
+    // Check if previously unlocked
+    if (sessionStorage.getItem('birthday_web_unlocked') === 'true') {
+        lockOverlay.classList.add('hide'); // hide immediately
+        mainContent.classList.remove('hide');
+        mainContent.classList.add('reveal-page');
+        initBalloons();
+    }
+
+    // --- Audio BGM Player ---
+    function playMusic() {
+        bgMusic.play()
+            .then(() => {
+                playIcon.classList.add('hide');
+                pauseIcon.classList.remove('hide');
+                musicToggleBtn.classList.add('playing');
+            })
+            .catch(err => {
+                console.log('Autoplay blocked: user interaction required for music.');
+            });
+    }
+
+    function pauseMusic() {
+        bgMusic.pause();
+        playIcon.classList.remove('hide');
+        pauseIcon.classList.add('hide');
+        musicToggleBtn.classList.remove('playing');
+    }
+
+    musicToggleBtn.addEventListener('click', () => {
+        if (bgMusic.paused) {
+            playMusic();
+        } else {
+            pauseMusic();
+        }
+    });
+
+    // --- 3D Birthday Card Flip ---
+    birthdayCard.addEventListener('click', (e) => {
+        birthdayCard.classList.toggle('flipped');
+        
+        // If flipped open, shoot confetti from the card's center
+        if (birthdayCard.classList.contains('flipped')) {
+            const cardRect = birthdayCard.getBoundingClientRect();
+            const centerX = cardRect.left + (cardRect.width / 2);
+            const centerY = cardRect.top + (cardRect.height / 2);
+            
+            setTimeout(() => {
+                spawnConfettiBurst(centerX, centerY, 40);
+            }, 300); // delay slightly to align with the flip transition
+        }
+    });
+});
